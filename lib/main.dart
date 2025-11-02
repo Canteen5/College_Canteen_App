@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Bottom Nav WebView App',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        scaffoldBackgroundColor: Colors.white,
+        primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: const Color.fromARGB(255, 249, 242, 236),
       ),
       home: const BottomNavApp(),
     );
@@ -49,27 +49,42 @@ class _BottomNavAppState extends State<BottomNavApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'students',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'staff',
-          ),
+  body: _pages[_selectedIndex],
+  bottomNavigationBar: Container(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Color.fromARGB(255, 236, 138, 26), // golden yellow
+          Color.fromARGB(255, 234, 204, 55), // warm orange
         ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
-    );
+    ),
+    child: BottomNavigationBar(
+      backgroundColor: Colors.transparent, // ✅ use transparent so gradient shows
+      elevation: 0,
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      selectedItemColor: Colors.black,
+      unselectedItemColor: const Color.fromARGB(255, 245, 238, 217),
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Students',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Staff',
+        ),
+      ],
+    ),
+  ),
+);
+
   }
 }

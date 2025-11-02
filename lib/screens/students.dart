@@ -1,93 +1,115 @@
 import 'package:flutter/material.dart';
-import 'Studentwebpage.dart'; // 👈 create this file for new website page
+import 'package:webview_flutter/webview_flutter.dart';
 
-class StudentProfileScreen extends StatelessWidget {
+class StudentProfileScreen extends StatefulWidget {
   const StudentProfileScreen({super.key});
+
+  @override
+  State<StudentProfileScreen> createState() => _StudentProfileScreenState();
+}
+
+class _StudentProfileScreenState extends State<StudentProfileScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  late WebViewController _controller1;
+  late WebViewController _controller2;
+  bool isLoading1 = true;
+  bool isLoading2 = true;
+
+  final String websiteUrl1 = 'https://example.com'; // 👈 change this
+  final String websiteUrl2 = 'https://example.com'; // 👈 change this
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
+    _controller1 = WebViewController()
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (_) => setState(() => isLoading1 = true),
+          onPageFinished: (_) => setState(() => isLoading1 = false),
+        ),
+      )
+      ..loadRequest(Uri.parse(websiteUrl1));
+
+    _controller2 = WebViewController()
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (_) => setState(() => isLoading2 = true),
+          onPageFinished: (_) => setState(() => isLoading2 = false),
+        ),
+      )
+      ..loadRequest(Uri.parse(websiteUrl2));
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HELLO STUDENTS'),
-        centerTitle: true,
-        backgroundColor: Colors.deepPurple,
-        elevation: 2,
+  title: const Text(
+    "SnackSync 😋🍽️😋",
+    style: TextStyle(fontWeight: FontWeight.w600),
+  ),
+  centerTitle: true,
+  elevation: 2,
+  // Remove backgroundColor because we’ll use a gradient
+  flexibleSpace: Container(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Color.fromARGB(255, 240, 118, 4), // Deep orange
+          Color.fromARGB(255, 232, 183, 37), // Amber yellow
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 👤 Profile header
-            const CircleAvatar(
-              radius: 45,
-              backgroundColor: Colors.deepPurple,
-              child: Icon(Icons.person, size: 50, color: Colors.white),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Welcome to Students Profile',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-            ),
-            const SizedBox(height: 40),
+    ),
+  ),
+  bottom: TabBar(
+    controller: _tabController,
+    indicatorColor: Colors.white,
+    indicatorWeight: 3,
+    labelColor: Colors.white,
+    unselectedLabelColor: const Color.fromARGB(179, 23, 16, 16),
+    tabs: const [
+      Tab(icon: Icon(Icons.dinner_dining), text: "CSIT-Canteen"),
+      Tab(icon: Icon(Icons.food_bank), text: "Mechanical-Canteen"),
+    ],
+  ),
+),
 
-            // 🌐 Beautiful tab-like button
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const WebPageView(),
-                  ),
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Colors.deepPurple, Colors.purpleAccent],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.deepPurple.withOpacity(0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // 🌐 First Website
+          Stack(
+            children: [
+              WebViewWidget(controller: _controller1),
+              if (isLoading1)
+                const Center(
+                  child: CircularProgressIndicator(color: Colors.deepPurple),
                 ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.language, color: Colors.white, size: 26),
-                    SizedBox(width: 10),
-                    Text(
-                      "Welcome students",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ],
+          ),
 
-            const SizedBox(height: 60),
-            const Text(
-              'Tap the tab above to view your online profile 🌐',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
+          // 🌐 Second Website
+          Stack(
+            children: [
+              WebViewWidget(controller: _controller2),
+              if (isLoading2)
+                const Center(
+                  child: CircularProgressIndicator(color: Colors.purple),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }
