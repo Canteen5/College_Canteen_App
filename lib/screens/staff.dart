@@ -1,4 +1,4 @@
-import 'package:canteen_app/staff/StaffWebTabs.dart';
+import 'package:SnackSync/staff/StaffWebTabs.dart';
 import 'package:flutter/material.dart';
 
 class StaffProfileScreen extends StatelessWidget {
