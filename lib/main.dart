@@ -130,7 +130,7 @@ class _BottomNavAppState extends State<BottomNavApp> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
+    setState(() { 
       _selectedIndex = index;
     });
   }
