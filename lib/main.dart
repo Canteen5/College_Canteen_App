@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
 
     // After 3 seconds → navigate with fade
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
           transitionDuration: const Duration(milliseconds: 800),
